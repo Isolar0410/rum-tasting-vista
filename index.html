@@ -65,6 +65,15 @@
                 <h2>Panel de Resultados</h2>
                 <div class="config-info">
                     <p>Rones configurados para la cata: <span id="configured-rum-count">0</span></p>
+                    <p>Ron actual: <span id="current-rum-number">1</span> de <span id="total-rum-count">0</span></p>
+                </div>
+                
+                <!-- Sección de promedios por ron -->
+                <div class="averages-container">
+                    <h3>Promedios por Ron</h3>
+                    <div id="rum-averages" class="rum-averages">
+                        <!-- Los promedios se cargarán dinámicamente aquí -->
+                    </div>
                 </div>
                 
                 <!-- Sección para que el Maestro también vote -->
@@ -74,11 +83,11 @@
                 </div>
                 
                 <div class="results-container">
+                    <h3>Puntuaciones del Ron Actual</h3>
                     <table id="results-table">
                         <thead>
                             <tr>
                                 <th>Participante</th>
-                                <th>Ronda</th>
                                 <th>Pureza</th>
                                 <th>Vista</th>
                                 <th>Gusto</th>
@@ -91,12 +100,13 @@
                         </tbody>
                     </table>
                     <div id="no-results-message" class="info-message">
-                        No hay resultados disponibles aún. Los aparticipantes deben registrarse y enviar sus puntuaciones.
+                        No hay resultados disponibles para el ron actual. Los aparticipantes deben registrarse y enviar sus puntuaciones.
                     </div>
                 </div>
                 
                 <div class="button-container">
                     <button id="refresh-results-btn" class="btn primary-btn">Actualizar Resultados</button>
+                    <button id="next-rum-btn" class="btn secondary-btn">Siguiente Ron</button>
                     <button id="end-tasting-btn" class="btn secondary-btn">Finalizar Cata</button>
                 </div>
             </div>
@@ -140,11 +150,11 @@
                 <h2>Cata de Rones</h2>
                 <div class="guest-info">
                     <p>Participante: <span id="voting-guest-name">Nombre del Participante</span></p>
-                    <p>Rones restantes: <span id="remaining-rums">0</span> de <span id="total-rums">0</span></p>
+                    <p>Ron actual: <span id="guest-current-rum">1</span> de <span id="guest-total-rums">0</span></p>
                 </div>
                 
                 <div id="voting-form">
-                    <h3>Ron #<span id="current-rum-number">1</span></h3>
+                    <h3>Ron #<span id="voting-rum-number">1</span></h3>
                     <div class="form-group">
                         <label for="purity-score">Pureza (2-10)</label>
                         <input type="number" id="purity-score" min="2" max="10" placeholder="2-10" class="input-field">
@@ -170,6 +180,10 @@
                 </div>
                 
                 <div id="voting-completed" class="info-message success hidden">
+                    Cata del ron actual finalizada. Espere al siguiente ron.
+                </div>
+                
+                <div id="tasting-completed" class="info-message success hidden">
                     Cata finalizada. Gracias por participar.
                 </div>
             </div>

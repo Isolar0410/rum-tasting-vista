@@ -141,6 +141,7 @@ label {
     justify-content: center;
     gap: 1rem;
     margin-top: 1.5rem;
+    flex-wrap: wrap;
 }
 
 .btn {
@@ -251,6 +252,64 @@ tr:hover {
     margin-bottom: 1rem;
 }
 
+/* Estilos para la sección de promedios por ron */
+.rum-averages {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.rum-card {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    box-shadow: var(--box-shadow);
+    border-left: 4px solid var(--primary-color);
+}
+
+.rum-card h4 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: var(--secondary-color);
+    font-size: 1.1rem;
+}
+
+.rum-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.rum-stats span {
+    font-weight: bold;
+}
+
+.participant-list {
+    max-height: 150px;
+    overflow-y: auto;
+    border-top: 1px dashed #ddd;
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.participant-item {
+    margin-bottom: 0.3rem;
+    padding: 0.3rem 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.participant-name {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.participant-score {
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
 /* Estilos para pie de página */
 footer {
     text-align: center;
@@ -289,5 +348,9 @@ footer {
     
     .wide-card {
         overflow-x: auto;
+    }
+    
+    .rum-averages {
+        grid-template-columns: 1fr;
     }
 }

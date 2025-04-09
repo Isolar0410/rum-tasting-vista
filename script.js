@@ -2,7 +2,8 @@
 /**
  * Script principal para la aplicación de Cata de Rones
  * Este script maneja toda la lógica de navegación, autenticación,
- * registro de aparticipantes, votación y visualización de resultados.
+ * registro de aparticipantes, votación, visualización de resultados,
+ * y evaluación ron por ron con cálculo de promedios.
  */
 
 // Constantes
@@ -13,8 +14,10 @@ const STORAGE_KEY = "rumTastingData";
 let appState = {
     configured: false,
     rumCount: 0,
+    currentRum: 1,
     guests: [],
-    results: []
+    results: [],
+    rumAverages: []
 };
 
 // Función para inicializar la aplicación
@@ -58,8 +61,10 @@ function resetAppData() {
     appState = {
         configured: false,
         rumCount: 0,
+        currentRum: 1,
         guests: [],
-        results: []
+        results: [],
+        rumAverages: []
     };
     saveAppData();
     console.log("Datos de la aplicación reiniciados");
@@ -102,6 +107,7 @@ function setupEventListeners() {
     document.getElementById("login-btn").addEventListener("click", validateMasterLogin);
     document.getElementById("save-config-btn").addEventListener("click", saveRumConfiguration);
     document.getElementById("refresh-results-btn").addEventListener("click", refreshResults);
+    document.getElementById("next-rum-btn").addEventListener("click", nextRum);
     document.getElementById("end-tasting-btn").addEventListener("click", endTasting);
     document.getElementById("master-participate-btn").addEventListener("click", setupMasterVoting);
     
@@ -161,6 +167,25 @@ function saveRumConfiguration() {
     if (rumCount >= 1 && rumCount <= 10) {
         appState.configured = true;
         appState.rumCount = rumCount;
+        appState.currentRum = 1;
+        appState.rumAverages = Array(rumCount).fill().map(() => ({
+            participants: [],
+            totalScores: {
+                purity: 0,
+                visual: 0,
+                taste: 0,
+                smell: 0,
+                total: 0
+            },
+            averageScores: {
+                purity: 0,
+                visual: 0,
+                taste: 0,
+                smell: 0,
+                total: 0
+            },
+            participantCount: 0
+        }));
         saveAppData();
         
         // Mostrar la sección de resultados
@@ -173,17 +198,20 @@ function saveRumConfiguration() {
 
 // Mostrar la sección de resultados del Maestro con los datos actualizados
 function showMasterResults() {
-    // Actualizar el contador de rones configurados
+    // Actualizar el contador de rones configurados y el ron actual
     document.getElementById("configured-rum-count").textContent = appState.rumCount;
+    document.getElementById("current-rum-number").textContent = appState.currentRum;
+    document.getElementById("total-rum-count").textContent = appState.rumCount;
     
-    // Actualizar la tabla de resultados
+    // Actualizar la tabla de resultados y los promedios
     refreshResults();
+    updateRumAverages();
     
     // Mostrar sección
     showSection("master-results-section");
 }
 
-// Actualizar la tabla de resultados
+// Actualizar la tabla de resultados para el ron actual
 function refreshResults() {
     const tableBody = document.getElementById("results-body");
     const noResultsMessage = document.getElementById("no-results-message");
@@ -191,22 +219,24 @@ function refreshResults() {
     // Limpiar la tabla actual
     tableBody.innerHTML = "";
     
-    if (appState.results.length === 0) {
-        // No hay resultados, mostrar mensaje
+    // Filtrar resultados solo para el ron actual
+    const currentResults = appState.results.filter(result => result.rumNumber === appState.currentRum);
+    
+    if (currentResults.length === 0) {
+        // No hay resultados para este ron, mostrar mensaje
         noResultsMessage.classList.remove("hidden");
     } else {
         // Ocultar mensaje de no resultados
         noResultsMessage.classList.add("hidden");
         
         // Mostrar cada resultado en la tabla
-        appState.results.forEach((result, index) => {
+        currentResults.forEach(result => {
             const guest = appState.guests.find(g => g.id === result.guestId);
             const guestName = guest ? `${guest.name} ${guest.lastname}` : "Aparticipante Desconocido";
             
             const row = document.createElement("tr");
             row.innerHTML = `
                 <td>${guestName}</td>
-                <td>${result.rumNumber}</td>
                 <td>${result.scores.purity}</td>
                 <td>${result.scores.visual}</td>
                 <td>${result.scores.taste}</td>
@@ -218,7 +248,162 @@ function refreshResults() {
         });
     }
     
-    console.log("Resultados actualizados en la tabla");
+    console.log("Resultados actualizados en la tabla para el ron actual");
+}
+
+// Calcular y actualizar los promedios de todos los rones
+function updateRumAverages() {
+    const rumAveragesContainer = document.getElementById("rum-averages");
+    rumAveragesContainer.innerHTML = "";
+    
+    // Recalcular los promedios para cada ron
+    for (let rumIndex = 0; rumIndex < appState.rumCount; rumIndex++) {
+        const rumNumber = rumIndex + 1;
+        
+        // Filtrar resultados para este ron
+        const rumResults = appState.results.filter(result => result.rumNumber === rumNumber);
+        
+        // Si no hay resultados para este ron, continuar con el siguiente
+        if (rumResults.length === 0) {
+            continue;
+        }
+        
+        // Calcular los totales y promedios
+        const totalScores = {
+            purity: 0,
+            visual: 0,
+            taste: 0,
+            smell: 0,
+            total: 0
+        };
+        
+        const participants = [];
+        
+        rumResults.forEach(result => {
+            const guest = appState.guests.find(g => g.id === result.guestId);
+            if (guest) {
+                totalScores.purity += result.scores.purity;
+                totalScores.visual += result.scores.visual;
+                totalScores.taste += result.scores.taste;
+                totalScores.smell += result.scores.smell;
+                totalScores.total += result.total;
+                
+                participants.push({
+                    name: `${guest.name} ${guest.lastname}`,
+                    score: result.total
+                });
+            }
+        });
+        
+        const participantCount = rumResults.length;
+        
+        const averageScores = {
+            purity: participantCount > 0 ? (totalScores.purity / participantCount).toFixed(2) : 0,
+            visual: participantCount > 0 ? (totalScores.visual / participantCount).toFixed(2) : 0,
+            taste: participantCount > 0 ? (totalScores.taste / participantCount).toFixed(2) : 0,
+            smell: participantCount > 0 ? (totalScores.smell / participantCount).toFixed(2) : 0,
+            total: participantCount > 0 ? (totalScores.total / participantCount).toFixed(2) : 0
+        };
+        
+        // Actualizar los promedios en el estado de la aplicación
+        appState.rumAverages[rumIndex] = {
+            participants,
+            totalScores,
+            averageScores,
+            participantCount
+        };
+        
+        // Crear la tarjeta de promedios para este ron
+        const rumCard = document.createElement("div");
+        rumCard.className = "rum-card";
+        
+        // Si este es el ron actual, destacarlo
+        if (rumNumber === appState.currentRum) {
+            rumCard.style.borderLeftColor = "var(--success-color)";
+            rumCard.style.borderLeftWidth = "6px";
+        }
+        
+        let participantsHtml = '';
+        participants.forEach(p => {
+            participantsHtml += `
+                <div class="participant-item">
+                    <span class="participant-name">${p.name}</span>
+                    <span class="participant-score">${p.score}</span>
+                </div>
+            `;
+        });
+        
+        rumCard.innerHTML = `
+            <h4>Ron #${rumNumber}</h4>
+            <div class="rum-stats">
+                <div>Puntuación promedio:</div>
+                <span>${averageScores.total}</span>
+            </div>
+            <div class="rum-stats">
+                <div>Participantes:</div>
+                <span>${participantCount}</span>
+            </div>
+            <div class="rum-stats">
+                <div>Promedios por categoría:</div>
+            </div>
+            <div class="rum-stats">
+                <div>- Pureza:</div>
+                <span>${averageScores.purity}</span>
+            </div>
+            <div class="rum-stats">
+                <div>- Vista:</div>
+                <span>${averageScores.visual}</span>
+            </div>
+            <div class="rum-stats">
+                <div>- Gusto:</div>
+                <span>${averageScores.taste}</span>
+            </div>
+            <div class="rum-stats">
+                <div>- Olfato:</div>
+                <span>${averageScores.smell}</span>
+            </div>
+            <div class="participant-list">
+                ${participantsHtml}
+            </div>
+        `;
+        
+        rumAveragesContainer.appendChild(rumCard);
+    }
+    
+    saveAppData();
+    console.log("Promedios de rones actualizados");
+}
+
+// Pasar al siguiente ron
+function nextRum() {
+    if (appState.currentRum < appState.rumCount) {
+        appState.currentRum++;
+        saveAppData();
+        
+        // Actualizar la interfaz con el nuevo ron actual
+        document.getElementById("current-rum-number").textContent = appState.currentRum;
+        
+        // Refrescar resultados y promedios
+        refreshResults();
+        updateRumAverages();
+        
+        // Notificar a los aparticipantes que pueden votar en el siguiente ron
+        notifyParticipantsOfNextRum();
+    } else {
+        alert("Ya está en el último ron. No hay más rones para evaluar.");
+    }
+}
+
+// Notificar a los aparticipantes que pueden votar en el siguiente ron
+function notifyParticipantsOfNextRum() {
+    // Actualizar el estado de los aparticipantes para que puedan votar en el nuevo ron
+    appState.guests.forEach(guest => {
+        if (!guest.rumsVoted) {
+            guest.rumsVoted = {};
+        }
+        // No es necesario inicializar el nuevo ron, se hará cuando voten
+    });
+    saveAppData();
 }
 
 // Finalizar la cata y reiniciar los datos
@@ -241,12 +426,18 @@ function setupMasterVoting() {
             id: "master-" + Date.now().toString(),
             name: "Maestro",
             lastname: "Ronero",
-            rumsCompleted: 0,
+            rumsVoted: {},
             isMaster: true
         };
         
         appState.guests.push(masterGuest);
         saveAppData();
+    }
+    
+    // Verificar si el Maestro ya votó en el ron actual
+    if (masterGuest.rumsVoted && masterGuest.rumsVoted[appState.currentRum]) {
+        alert("Ya ha votado para el ron actual. Debe pasar al siguiente ron para votar nuevamente.");
+        return;
     }
     
     // Preparar la sección de votación para el Maestro
@@ -290,7 +481,7 @@ function registerGuest() {
             id: Date.now().toString(), // Usar timestamp como ID único
             name: name,
             lastname: lastname,
-            rumsCompleted: 0,
+            rumsVoted: {}, // Objeto para seguir en qué rones ha votado
             isMaster: false
         };
         
@@ -313,23 +504,39 @@ function registerGuest() {
 function prepareVotingSection(guest) {
     // Actualizar información del aparticipante
     document.getElementById("voting-guest-name").textContent = `${guest.name} ${guest.lastname}`;
-    document.getElementById("remaining-rums").textContent = appState.rumCount - guest.rumsCompleted;
-    document.getElementById("total-rums").textContent = appState.rumCount;
-    document.getElementById("current-rum-number").textContent = guest.rumsCompleted + 1;
+    document.getElementById("guest-current-rum").textContent = appState.currentRum;
+    document.getElementById("guest-total-rums").textContent = appState.rumCount;
+    document.getElementById("voting-rum-number").textContent = appState.currentRum;
     
     // Limpiar formulario de votación
     clearVotingForm();
     
+    // Verificar si el aparticipante ya votó en el ron actual
+    const hasVotedCurrentRum = guest.rumsVoted && guest.rumsVoted[appState.currentRum];
+    
+    // Verificar si se han completado todos los rones
+    const allRumsCompleted = appState.currentRum === appState.rumCount && hasVotedCurrentRum;
+    
     // Mostrar u ocultar elementos según el estado
     const votingForm = document.getElementById("voting-form");
     const votingCompleted = document.getElementById("voting-completed");
+    const tastingCompleted = document.getElementById("tasting-completed");
     
-    if (guest.rumsCompleted < appState.rumCount) {
-        votingForm.classList.remove("hidden");
+    if (allRumsCompleted) {
+        // Cata completamente finalizada
+        votingForm.classList.add("hidden");
         votingCompleted.classList.add("hidden");
-    } else {
+        tastingCompleted.classList.remove("hidden");
+    } else if (hasVotedCurrentRum) {
+        // Ron actual completado, esperando al siguiente
         votingForm.classList.add("hidden");
         votingCompleted.classList.remove("hidden");
+        tastingCompleted.classList.add("hidden");
+    } else {
+        // Puede votar en el ron actual
+        votingForm.classList.remove("hidden");
+        votingCompleted.classList.add("hidden");
+        tastingCompleted.classList.add("hidden");
     }
     
     // Mostrar sección
@@ -374,10 +581,18 @@ function submitScore() {
     );
     
     if (currentGuest) {
+        // Inicializar el objeto rumsVoted si no existe
+        if (!currentGuest.rumsVoted) {
+            currentGuest.rumsVoted = {};
+        }
+        
+        // Marcar este ron como votado
+        currentGuest.rumsVoted[appState.currentRum] = true;
+        
         // Registrar la puntuación
         appState.results.push({
             guestId: currentGuest.id,
-            rumNumber: currentGuest.rumsCompleted + 1,
+            rumNumber: appState.currentRum,
             timestamp: Date.now(),
             scores: {
                 purity: purityScore,
@@ -388,19 +603,20 @@ function submitScore() {
             total: totalScore
         });
         
-        // Actualizar contador de rones completados
-        currentGuest.rumsCompleted++;
         saveAppData();
         
         // Si el Maestro Ronero termina su votación, volver a la pantalla de resultados
-        if (currentGuest.isMaster && currentGuest.rumsCompleted >= appState.rumCount) {
+        if (currentGuest.isMaster) {
             setTimeout(() => {
                 showMasterResults();
             }, 1500);
         } else {
-            // Actualizar la interfaz para continuar con la votación o mostrar mensaje de finalización
+            // Actualizar la interfaz para mostrar mensaje de espera
             prepareVotingSection(currentGuest);
         }
+        
+        // Actualizar los promedios de los rones (esto afectará al panel del Maestro Ronero)
+        updateRumAverages();
     }
 }
 
