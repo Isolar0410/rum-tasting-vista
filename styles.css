@@ -227,13 +227,28 @@ tr:hover {
     background-color: rgba(212, 175, 55, 0.1);
 }
 
-/* Información de invitado en sección de votación */
+/* Información de aparticipante en sección de votación */
 .guest-info, .config-info {
     background-color: rgba(248, 245, 230, 0.8);
     padding: 1rem;
     border-radius: var(--border-radius);
     margin-bottom: 1.5rem;
     border-left: 4px solid var(--accent-color);
+}
+
+/* Estilo para la sección de votación del maestro */
+.master-voting-container {
+    background-color: rgba(248, 245, 230, 0.9);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1.5rem;
+    border-left: 4px solid var(--primary-color);
+    text-align: center;
+}
+
+.master-voting-container h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
 }
 
 /* Estilos para pie de página */

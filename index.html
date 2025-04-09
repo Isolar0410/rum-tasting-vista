@@ -24,7 +24,7 @@
                 <p>Seleccione su rol para continuar</p>
                 <div class="button-container">
                     <button id="master-btn" class="btn primary-btn">Maestro Ronero</button>
-                    <button id="guest-btn" class="btn secondary-btn">Invitado</button>
+                    <button id="guest-btn" class="btn secondary-btn">Aparticipante</button>
                 </div>
             </div>
         </section>
@@ -67,11 +67,17 @@
                     <p>Rones configurados para la cata: <span id="configured-rum-count">0</span></p>
                 </div>
                 
+                <!-- Sección para que el Maestro también vote -->
+                <div class="master-voting-container">
+                    <h3>Participar en la Cata</h3>
+                    <button id="master-participate-btn" class="btn primary-btn">Puntuar como Maestro</button>
+                </div>
+                
                 <div class="results-container">
                     <table id="results-table">
                         <thead>
                             <tr>
-                                <th>Invitado</th>
+                                <th>Participante</th>
                                 <th>Ronda</th>
                                 <th>Pureza</th>
                                 <th>Vista</th>
@@ -85,7 +91,7 @@
                         </tbody>
                     </table>
                     <div id="no-results-message" class="info-message">
-                        No hay resultados disponibles aún. Los invitados deben registrarse y enviar sus puntuaciones.
+                        No hay resultados disponibles aún. Los aparticipantes deben registrarse y enviar sus puntuaciones.
                     </div>
                 </div>
                 
@@ -96,7 +102,7 @@
             </div>
         </section>
 
-        <!-- Verificación para Invitado -->
+        <!-- Verificación para Aparticipante -->
         <section id="guest-check-section" class="hidden-section">
             <div class="card">
                 <h2>Verificando Estado de la Cata</h2>
@@ -109,10 +115,10 @@
             </div>
         </section>
 
-        <!-- Registro de Invitado -->
+        <!-- Registro de Aparticipante -->
         <section id="guest-register-section" class="hidden-section">
             <div class="card">
-                <h2>Registro de Invitado</h2>
+                <h2>Registro de Aparticipante</h2>
                 <div class="form-group">
                     <label for="guest-name">Nombre</label>
                     <input type="text" id="guest-name" placeholder="Ingrese su nombre" class="input-field">
@@ -128,12 +134,12 @@
             </div>
         </section>
 
-        <!-- Sección de Votación de Invitado -->
+        <!-- Sección de Votación -->
         <section id="guest-voting-section" class="hidden-section">
             <div class="card">
                 <h2>Cata de Rones</h2>
                 <div class="guest-info">
-                    <p>Invitado: <span id="voting-guest-name">Nombre del Invitado</span></p>
+                    <p>Participante: <span id="voting-guest-name">Nombre del Participante</span></p>
                     <p>Rones restantes: <span id="remaining-rums">0</span> de <span id="total-rums">0</span></p>
                 </div>
                 
