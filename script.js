@@ -1,8 +1,7 @@
-
 /**
  * Script principal para la aplicación de Cata de Rones
  * Este script maneja toda la lógica de navegación, autenticación,
- * registro de aparticipantes, votación, visualización de resultados,
+ * registro de participantes, votación, visualización de resultados,
  * y evaluación ron por ron con cálculo de promedios.
  */
 
@@ -111,7 +110,7 @@ function setupEventListeners() {
     document.getElementById("end-tasting-btn").addEventListener("click", endTasting);
     document.getElementById("master-participate-btn").addEventListener("click", setupMasterVoting);
     
-    // Eventos para Aparticipante
+    // Eventos para Participante
     document.getElementById("register-btn").addEventListener("click", registerGuest);
     document.getElementById("submit-score-btn").addEventListener("click", submitScore);
     
@@ -232,15 +231,11 @@ function refreshResults() {
         // Mostrar cada resultado en la tabla
         currentResults.forEach(result => {
             const guest = appState.guests.find(g => g.id === result.guestId);
-            const guestName = guest ? `${guest.name} ${guest.lastname}` : "Aparticipante Desconocido";
+            const guestName = guest ? `${guest.name.toUpperCase()} ${guest.lastname.toUpperCase()}` : "Participante Desconocido";
             
             const row = document.createElement("tr");
             row.innerHTML = `
                 <td>${guestName}</td>
-                <td>${result.scores.purity}</td>
-                <td>${result.scores.visual}</td>
-                <td>${result.scores.taste}</td>
-                <td>${result.scores.smell}</td>
                 <td><strong>${result.total}</strong></td>
             `;
             
@@ -255,6 +250,28 @@ function refreshResults() {
 function updateRumAverages() {
     const rumAveragesContainer = document.getElementById("rum-averages");
     rumAveragesContainer.innerHTML = "";
+    
+    // Asegurarnos de que rumAverages esté inicializado correctamente
+    if (!appState.rumAverages || appState.rumAverages.length !== appState.rumCount) {
+        appState.rumAverages = Array(appState.rumCount).fill().map(() => ({
+            participants: [],
+            totalScores: {
+                purity: 0,
+                visual: 0,
+                taste: 0,
+                smell: 0,
+                total: 0
+            },
+            averageScores: {
+                purity: 0,
+                visual: 0,
+                taste: 0,
+                smell: 0,
+                total: 0
+            },
+            participantCount: 0
+        }));
+    }
     
     // Recalcular los promedios para cada ron
     for (let rumIndex = 0; rumIndex < appState.rumCount; rumIndex++) {
@@ -289,7 +306,7 @@ function updateRumAverages() {
                 totalScores.total += result.total;
                 
                 participants.push({
-                    name: `${guest.name} ${guest.lastname}`,
+                    name: `${guest.name.toUpperCase()} ${guest.lastname.toUpperCase()}`,
                     score: result.total
                 });
             }
@@ -445,7 +462,7 @@ function setupMasterVoting() {
 }
 
 /**
- * Funciones para el flujo de Aparticipante
+ * Funciones para el flujo de Participante
  */
 
 // Verificar si la cata está configurada para permitir aparticipantes
