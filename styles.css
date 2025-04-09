@@ -1,0 +1,278 @@
+
+/* Variables globales para consistencia de diseño */
+:root {
+    --primary-color: #d4af37;
+    --secondary-color: #3a2718;
+    --background-color: #f8f5e6;
+    --card-color: #ffffff;
+    --text-color: #333333;
+    --accent-color: #8b4513;
+    --error-color: #d32f2f;
+    --success-color: #2e7d32;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --transition-speed: 0.3s;
+}
+
+/* Estilos base y resets */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Georgia', serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    flex: 1;
+}
+
+/* Estilos de encabezado */
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 1rem;
+}
+
+h1 {
+    color: var(--secondary-color);
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.subtitle {
+    color: var(--accent-color);
+    font-style: italic;
+}
+
+h2 {
+    color: var(--secondary-color);
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+h3 {
+    color: var(--accent-color);
+    font-size: 1.4rem;
+    margin: 1rem 0;
+}
+
+/* Estilos de tarjetas y secciones */
+.card, .welcome-card {
+    background-color: var(--card-color);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid rgba(209, 187, 130, 0.3);
+}
+
+.welcome-card {
+    background-image: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.95),
+        rgba(255, 255, 255, 0.85)
+    ),
+    url('https://www.transparenttextures.com/patterns/wood-pattern.png');
+    text-align: center;
+    padding: 3rem;
+}
+
+.wide-card {
+    max-width: 1000px;
+}
+
+.active-section {
+    display: block;
+}
+
+.hidden-section {
+    display: none;
+}
+
+/* Estilos de formularios */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: var(--secondary-color);
+}
+
+.input-field {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius);
+    font-family: inherit;
+    font-size: 1rem;
+    transition: border-color var(--transition-speed);
+}
+
+.input-field:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+/* Estilos de botones */
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.btn {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: var(--border-radius);
+    font-family: inherit;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+}
+
+.primary-btn {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+}
+
+.primary-btn:hover {
+    background-color: #c69c2c;
+}
+
+.secondary-btn {
+    background-color: var(--secondary-color);
+    color: #ffffff;
+}
+
+.secondary-btn:hover {
+    background-color: #2a1a0e;
+}
+
+/* Mensajes de información y error */
+.info-message {
+    background-color: rgba(220, 237, 255, 0.7);
+    border-left: 4px solid #2196f3;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: var(--border-radius);
+}
+
+.error-message {
+    background-color: rgba(255, 220, 220, 0.7);
+    border-left: 4px solid var(--error-color);
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: var(--border-radius);
+    color: var(--error-color);
+}
+
+.success {
+    background-color: rgba(220, 255, 220, 0.7);
+    border-left: 4px solid var(--success-color);
+    color: var(--success-color);
+}
+
+.hidden {
+    display: none;
+}
+
+/* Estilos de tablas para resultados */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+th, td {
+    padding: 0.8rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background-color: rgba(245, 245, 220, 0.5);
+}
+
+tr:hover {
+    background-color: rgba(212, 175, 55, 0.1);
+}
+
+/* Información de invitado en sección de votación */
+.guest-info, .config-info {
+    background-color: rgba(248, 245, 230, 0.8);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1.5rem;
+    border-left: 4px solid var(--accent-color);
+}
+
+/* Estilos para pie de página */
+footer {
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
+    color: var(--accent-color);
+    font-size: 0.9rem;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .button-container {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .card, .welcome-card {
+        padding: 1.5rem;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    .wide-card {
+        overflow-x: auto;
+    }
+}

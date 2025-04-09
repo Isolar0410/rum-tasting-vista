@@ -1,26 +1,179 @@
+
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>rum-tasting-vista</title>
-    <meta name="description" content="Lovable Generated Project" />
-    <meta name="author" content="Lovable" />
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vista Cata de Rones</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Georgia:wght@400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Vista Cata de Rones</h1>
+            <p class="subtitle">Experiencia sensorial excepcional</p>
+        </header>
 
-    <meta property="og:title" content="rum-tasting-vista" />
-    <meta property="og:description" content="Lovable Generated Project" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+        <!-- Sección de Bienvenida -->
+        <section id="welcome-section" class="active-section">
+            <div class="welcome-card">
+                <h2>Bienvenido a la Cata de Rones</h2>
+                <p>Seleccione su rol para continuar</p>
+                <div class="button-container">
+                    <button id="master-btn" class="btn primary-btn">Maestro Ronero</button>
+                    <button id="guest-btn" class="btn secondary-btn">Invitado</button>
+                </div>
+            </div>
+        </section>
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-  </head>
+        <!-- Sección de Login para Maestro Ronero -->
+        <section id="master-login-section" class="hidden-section">
+            <div class="card">
+                <h2>Acceso Maestro Ronero</h2>
+                <div class="form-group">
+                    <label for="master-password">Contraseña</label>
+                    <input type="password" id="master-password" placeholder="Ingrese contraseña" class="input-field">
+                </div>
+                <div class="button-container">
+                    <button id="login-btn" class="btn primary-btn">Ingresar</button>
+                    <button id="back-to-welcome-from-login" class="btn secondary-btn">Volver</button>
+                </div>
+                <div id="login-error" class="error-message hidden">Contraseña incorrecta, por favor intente nuevamente.</div>
+            </div>
+        </section>
 
-  <body>
-    <div id="root"></div>
-    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+        <!-- Sección de Configuración de Cata -->
+        <section id="master-config-section" class="hidden-section">
+            <div class="card">
+                <h2>Configuración de la Cata</h2>
+                <div class="form-group">
+                    <label for="rum-count">Cantidad de Rones a Catar</label>
+                    <input type="number" id="rum-count" min="1" max="10" value="4" class="input-field">
+                </div>
+                <div class="button-container">
+                    <button id="save-config-btn" class="btn primary-btn">Guardar Configuración</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Panel de Resultados para Maestro Ronero -->
+        <section id="master-results-section" class="hidden-section">
+            <div class="card wide-card">
+                <h2>Panel de Resultados</h2>
+                <div class="config-info">
+                    <p>Rones configurados para la cata: <span id="configured-rum-count">0</span></p>
+                </div>
+                
+                <div class="results-container">
+                    <table id="results-table">
+                        <thead>
+                            <tr>
+                                <th>Invitado</th>
+                                <th>Ronda</th>
+                                <th>Pureza</th>
+                                <th>Vista</th>
+                                <th>Gusto</th>
+                                <th>Olfato</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="results-body">
+                            <!-- Los resultados se cargarán dinámicamente aquí -->
+                        </tbody>
+                    </table>
+                    <div id="no-results-message" class="info-message">
+                        No hay resultados disponibles aún. Los invitados deben registrarse y enviar sus puntuaciones.
+                    </div>
+                </div>
+                
+                <div class="button-container">
+                    <button id="refresh-results-btn" class="btn primary-btn">Actualizar Resultados</button>
+                    <button id="end-tasting-btn" class="btn secondary-btn">Finalizar Cata</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Verificación para Invitado -->
+        <section id="guest-check-section" class="hidden-section">
+            <div class="card">
+                <h2>Verificando Estado de la Cata</h2>
+                <div id="guest-check-message" class="info-message">
+                    Comprobando si la cata está configurada...
+                </div>
+                <div class="button-container">
+                    <button id="back-to-welcome-from-check" class="btn secondary-btn">Volver</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Registro de Invitado -->
+        <section id="guest-register-section" class="hidden-section">
+            <div class="card">
+                <h2>Registro de Invitado</h2>
+                <div class="form-group">
+                    <label for="guest-name">Nombre</label>
+                    <input type="text" id="guest-name" placeholder="Ingrese su nombre" class="input-field">
+                </div>
+                <div class="form-group">
+                    <label for="guest-lastname">Apellido</label>
+                    <input type="text" id="guest-lastname" placeholder="Ingrese su apellido" class="input-field">
+                </div>
+                <div class="button-container">
+                    <button id="register-btn" class="btn primary-btn">Registrarse</button>
+                    <button id="back-to-welcome-from-register" class="btn secondary-btn">Volver</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Votación de Invitado -->
+        <section id="guest-voting-section" class="hidden-section">
+            <div class="card">
+                <h2>Cata de Rones</h2>
+                <div class="guest-info">
+                    <p>Invitado: <span id="voting-guest-name">Nombre del Invitado</span></p>
+                    <p>Rones restantes: <span id="remaining-rums">0</span> de <span id="total-rums">0</span></p>
+                </div>
+                
+                <div id="voting-form">
+                    <h3>Ron #<span id="current-rum-number">1</span></h3>
+                    <div class="form-group">
+                        <label for="purity-score">Pureza (2-10)</label>
+                        <input type="number" id="purity-score" min="2" max="10" placeholder="2-10" class="input-field">
+                    </div>
+                    <div class="form-group">
+                        <label for="visual-score">Vista (2-10)</label>
+                        <input type="number" id="visual-score" min="2" max="10" placeholder="2-10" class="input-field">
+                    </div>
+                    <div class="form-group">
+                        <label for="taste-score">Gusto (4-20)</label>
+                        <input type="number" id="taste-score" min="4" max="20" placeholder="4-20" class="input-field">
+                    </div>
+                    <div class="form-group">
+                        <label for="smell-score">Olfato (2-25)</label>
+                        <input type="number" id="smell-score" min="2" max="25" placeholder="2-25" class="input-field">
+                    </div>
+                    <div class="button-container">
+                        <button id="submit-score-btn" class="btn primary-btn">Enviar Puntuación</button>
+                    </div>
+                    <div id="voting-error" class="error-message hidden">
+                        Por favor, complete todos los campos con valores dentro de los rangos indicados.
+                    </div>
+                </div>
+                
+                <div id="voting-completed" class="info-message success hidden">
+                    Cata finalizada. Gracias por participar.
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2025 Vista Cata de Rones. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
 </html>
