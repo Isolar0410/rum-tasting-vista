@@ -1,3 +1,4 @@
+
 /**
  * Script principal para la aplicación de Cata de Rones
  * Este script maneja toda la lógica de navegación, autenticación,
@@ -8,6 +9,7 @@
 // Constantes
 const MASTER_PASSWORD = "2001";
 const STORAGE_KEY = "rumTastingData";
+const UPDATE_INTERVAL = 3000; // Intervalo de actualización en milisegundos (3 segundos)
 
 // Estado global de la aplicación
 let appState = {
@@ -18,6 +20,10 @@ let appState = {
     results: [],
     rumAverages: []
 };
+
+// Variables para intervalos de actualización
+let masterUpdateInterval = null;
+let guestUpdateInterval = null;
 
 // Función para inicializar la aplicación
 function initApp() {
@@ -89,6 +95,52 @@ function showSection(sectionId) {
     }
     
     console.log(`Navegación: Mostrando sección "${sectionId}"`);
+    
+    // Iniciar o detener intervalos de actualización dependiendo de la sección
+    setupUpdateIntervals(sectionId);
+}
+
+// Configurar intervalos de actualización basados en la sección actual
+function setupUpdateIntervals(sectionId) {
+    // Limpiar cualquier intervalo existente
+    clearInterval(masterUpdateInterval);
+    clearInterval(guestUpdateInterval);
+    
+    // Configurar nuevos intervalos según la sección
+    if (sectionId === "master-results-section") {
+        // Para la sección de resultados del maestro
+        masterUpdateInterval = setInterval(() => {
+            loadAppData(); // Recargar datos del localStorage
+            refreshResults(); // Actualizar la tabla de resultados
+            updateRumAverages(); // Actualizar promedios
+        }, UPDATE_INTERVAL);
+    } else if (sectionId === "guest-voting-section" || sectionId === "guest-check-section") {
+        // Para secciones de participante
+        guestUpdateInterval = setInterval(() => {
+            // Guardar el estado actual para comparar después
+            const oldState = JSON.stringify(appState);
+            
+            // Recargar datos
+            loadAppData();
+            
+            // Si los datos han cambiado, actualizar la interfaz según corresponda
+            if (oldState !== JSON.stringify(appState)) {
+                if (sectionId === "guest-check-section") {
+                    checkTastingStatus(false); // Actualizar estado sin cambiar de sección
+                } else if (sectionId === "guest-voting-section") {
+                    // Actualizar la interfaz de votación si ha cambiado el ron actual
+                    const guestNameDisplay = document.getElementById("voting-guest-name").textContent;
+                    const currentGuest = appState.guests.find(guest => 
+                        `${guest.name} ${guest.lastname}` === guestNameDisplay
+                    );
+                    
+                    if (currentGuest) {
+                        prepareVotingSection(currentGuest);
+                    }
+                }
+            }
+        }, UPDATE_INTERVAL);
+    }
 }
 
 /**
@@ -100,12 +152,16 @@ function setupEventListeners() {
         showSection("master-login-section");
     });
     
-    document.getElementById("guest-btn").addEventListener("click", checkTastingStatus);
+    document.getElementById("guest-btn").addEventListener("click", () => checkTastingStatus(true));
     
     // Eventos para Maestro Ronero
     document.getElementById("login-btn").addEventListener("click", validateMasterLogin);
     document.getElementById("save-config-btn").addEventListener("click", saveRumConfiguration);
-    document.getElementById("refresh-results-btn").addEventListener("click", refreshResults);
+    document.getElementById("refresh-results-btn").addEventListener("click", () => {
+        loadAppData(); // Recargar datos del localStorage
+        refreshResults(); // Actualizar tabla de resultados
+        updateRumAverages(); // Actualizar promedios
+    });
     document.getElementById("next-rum-btn").addEventListener("click", nextRum);
     document.getElementById("end-tasting-btn").addEventListener("click", endTasting);
     document.getElementById("master-participate-btn").addEventListener("click", setupMasterVoting);
@@ -354,7 +410,7 @@ function updateRumAverages() {
             <h4>Ron #${rumNumber}</h4>
             <div class="rum-stats">
                 <div>Puntuación promedio:</div>
-                <span>${averageScores.total}</span>
+                <span class="average-score">${averageScores.total}</span>
             </div>
             <div class="rum-stats">
                 <div>Participantes:</div>
@@ -404,16 +460,16 @@ function nextRum() {
         refreshResults();
         updateRumAverages();
         
-        // Notificar a los aparticipantes que pueden votar en el siguiente ron
+        // Notificar a los participantes que pueden votar en el siguiente ron
         notifyParticipantsOfNextRum();
     } else {
         alert("Ya está en el último ron. No hay más rones para evaluar.");
     }
 }
 
-// Notificar a los aparticipantes que pueden votar en el siguiente ron
+// Notificar a los participantes que pueden votar en el siguiente ron
 function notifyParticipantsOfNextRum() {
-    // Actualizar el estado de los aparticipantes para que puedan votar en el nuevo ron
+    // Actualizar el estado de los participantes para que puedan votar en el nuevo ron
     appState.guests.forEach(guest => {
         if (!guest.rumsVoted) {
             guest.rumsVoted = {};
@@ -435,7 +491,7 @@ function endTasting() {
  * Funciones para configurar la votación del Maestro
  */
 function setupMasterVoting() {
-    // Crear un "aparticipante" para el Maestro Ronero si no existe
+    // Crear un "participante" para el Maestro Ronero si no existe
     let masterGuest = appState.guests.find(g => g.isMaster === true);
     
     if (!masterGuest) {
@@ -465,26 +521,34 @@ function setupMasterVoting() {
  * Funciones para el flujo de Participante
  */
 
-// Verificar si la cata está configurada para permitir aparticipantes
-function checkTastingStatus() {
-    showSection("guest-check-section");
+// Verificar si la cata está configurada para permitir participantes
+function checkTastingStatus(changeSection = true) {
+    if (changeSection) {
+        showSection("guest-check-section");
+    }
+    
     const checkMessage = document.getElementById("guest-check-message");
     
+    // Forzar recarga de datos del localStorage
+    loadAppData();
+    
     if (appState.configured) {
-        checkMessage.textContent = "La cata está configurada. Puede registrarse como aparticipante.";
+        checkMessage.textContent = "La cata está configurada. Puede registrarse como participante.";
         checkMessage.className = "info-message success";
         
-        // Redirigir automáticamente después de un breve retraso
-        setTimeout(() => {
-            showSection("guest-register-section");
-        }, 1500);
+        // Redirigir automáticamente después de un breve retraso si se solicitó cambio de sección
+        if (changeSection) {
+            setTimeout(() => {
+                showSection("guest-register-section");
+            }, 1500);
+        }
     } else {
         checkMessage.textContent = "La cata aún no ha sido configurada por el Maestro Ronero. Por favor, espere a que se configure la cata.";
         checkMessage.className = "info-message error-message";
     }
 }
 
-// Registrar un nuevo aparticipante
+// Registrar un nuevo participante
 function registerGuest() {
     const nameInput = document.getElementById("guest-name");
     const lastnameInput = document.getElementById("guest-lastname");
@@ -493,7 +557,7 @@ function registerGuest() {
     const lastname = lastnameInput.value.trim();
     
     if (name && lastname) {
-        // Crear nuevo aparticipante
+        // Crear nuevo participante
         const newGuest = {
             id: Date.now().toString(), // Usar timestamp como ID único
             name: name,
@@ -517,9 +581,12 @@ function registerGuest() {
     }
 }
 
-// Preparar la sección de votación para un aparticipante específico
+// Preparar la sección de votación para un participante específico
 function prepareVotingSection(guest) {
-    // Actualizar información del aparticipante
+    // Forzar recarga de datos más recientes
+    loadAppData();
+    
+    // Actualizar información del participante
     document.getElementById("voting-guest-name").textContent = `${guest.name} ${guest.lastname}`;
     document.getElementById("guest-current-rum").textContent = appState.currentRum;
     document.getElementById("guest-total-rums").textContent = appState.rumCount;
@@ -528,7 +595,7 @@ function prepareVotingSection(guest) {
     // Limpiar formulario de votación
     clearVotingForm();
     
-    // Verificar si el aparticipante ya votó en el ron actual
+    // Verificar si el participante ya votó en el ron actual
     const hasVotedCurrentRum = guest.rumsVoted && guest.rumsVoted[appState.currentRum];
     
     // Verificar si se han completado todos los rones
@@ -591,7 +658,7 @@ function submitScore() {
     // Calcular puntuación total
     const totalScore = purityScore + visualScore + tasteScore + smellScore;
     
-    // Encontrar el aparticipante actual
+    // Encontrar el participante actual
     const guestNameDisplay = document.getElementById("voting-guest-name").textContent;
     const currentGuest = appState.guests.find(guest => 
         `${guest.name} ${guest.lastname}` === guestNameDisplay

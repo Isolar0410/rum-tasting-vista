@@ -1,19 +1,17 @@
-/* Variables globales para consistencia de diseño */
+
 :root {
-    --primary-color: #d4af37;
-    --secondary-color: #3a2718;
-    --background-color: #f8f5e6;
-    --card-color: #ffffff;
-    --text-color: #333333;
-    --accent-color: #8b4513;
-    --error-color: #d32f2f;
-    --success-color: #2e7d32;
-    --border-radius: 8px;
-    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    --transition-speed: 0.3s;
+    --primary-color: #1e3a8a;
+    --secondary-color: #4f46e5;
+    --accent-color: #f59e0b;
+    --background-color: #f3f4f6;
+    --card-background: #ffffff;
+    --text-color: #1f2937;
+    --border-color: #e5e7eb;
+    --error-color: #ef4444;
+    --success-color: #10b981;
+    --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-/* Estilos base y resets */
 * {
     margin: 0;
     padding: 0;
@@ -21,335 +19,316 @@
 }
 
 body {
-    font-family: 'Georgia', serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--background-color);
     color: var(--text-color);
     line-height: 1.6;
-    background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
 }
 
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-    flex: 1;
+    max-width: 100%;
+    min-height: 100vh;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-/* Estilos de encabezado */
 header {
     text-align: center;
     margin-bottom: 2rem;
-    border-bottom: 2px solid var(--primary-color);
-    padding-bottom: 1rem;
+    width: 100%;
 }
 
 h1 {
-    color: var(--secondary-color);
-    font-size: 2.5rem;
+    color: var(--primary-color);
+    font-size: 2rem;
     margin-bottom: 0.5rem;
-    font-weight: 700;
 }
 
 .subtitle {
-    color: var(--accent-color);
-    font-style: italic;
+    color: var(--secondary-color);
+    font-size: 1.2rem;
 }
 
 h2 {
-    color: var(--secondary-color);
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
-    text-align: center;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 h3 {
-    color: var(--accent-color);
-    font-size: 1.4rem;
-    margin: 1rem 0;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    margin: 1.5rem 0 1rem;
 }
 
-/* Estilos de tarjetas y secciones */
+h4 {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
 .card, .welcome-card {
-    background-color: var(--card-color);
-    padding: 2rem;
-    border-radius: var(--border-radius);
+    background-color: var(--card-background);
+    border-radius: 8px;
     box-shadow: var(--box-shadow);
-    margin-bottom: 2rem;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-    border: 1px solid rgba(209, 187, 130, 0.3);
-}
-
-.welcome-card {
-    background-image: linear-gradient(
-        to bottom,
-        rgba(255, 255, 255, 0.95),
-        rgba(255, 255, 255, 0.85)
-    ),
-    url('https://www.transparenttextures.com/patterns/wood-pattern.png');
-    text-align: center;
-    padding: 3rem;
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 1rem;
 }
 
 .wide-card {
-    max-width: 1000px;
+    max-width: 800px;
 }
 
-.active-section {
-    display: block;
+.btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
 }
 
-.hidden-section {
-    display: none;
+.primary-btn {
+    background-color: var(--primary-color);
+    color: white;
 }
 
-/* Estilos de formularios */
-.form-group {
-    margin-bottom: 1.5rem;
+.primary-btn:hover {
+    background-color: #152a62;
 }
 
-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: bold;
-    color: var(--secondary-color);
+.secondary-btn {
+    background-color: var(--secondary-color);
+    color: white;
 }
 
-.input-field {
-    width: 100%;
-    padding: 0.8rem;
-    border: 1px solid #ccc;
-    border-radius: var(--border-radius);
-    font-family: inherit;
-    font-size: 1rem;
-    transition: border-color var(--transition-speed);
+.secondary-btn:hover {
+    background-color: #3c35b9;
 }
 
-.input-field:focus {
-    border-color: var(--primary-color);
-    outline: none;
-}
-
-/* Estilos de botones */
 .button-container {
     display: flex;
-    justify-content: center;
     gap: 1rem;
     margin-top: 1.5rem;
     flex-wrap: wrap;
 }
 
-.btn {
-    padding: 0.8rem 1.5rem;
-    border: none;
-    border-radius: var(--border-radius);
-    font-family: inherit;
+.form-group {
+    margin-bottom: 1rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.input-field {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
     font-size: 1rem;
-    cursor: pointer;
-    transition: all var(--transition-speed);
-}
-
-.primary-btn {
-    background-color: var(--primary-color);
-    color: var(--secondary-color);
-}
-
-.primary-btn:hover {
-    background-color: #c69c2c;
-}
-
-.secondary-btn {
-    background-color: var(--secondary-color);
-    color: #ffffff;
-}
-
-.secondary-btn:hover {
-    background-color: #2a1a0e;
-}
-
-/* Mensajes de información y error */
-.info-message {
-    background-color: rgba(220, 237, 255, 0.7);
-    border-left: 4px solid #2196f3;
-    padding: 1rem;
-    margin: 1rem 0;
-    border-radius: var(--border-radius);
 }
 
 .error-message {
-    background-color: rgba(255, 220, 220, 0.7);
-    border-left: 4px solid var(--error-color);
-    padding: 1rem;
-    margin: 1rem 0;
-    border-radius: var(--border-radius);
     color: var(--error-color);
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.info-message {
+    background-color: #e0f2fe;
+    color: #0369a1;
+    padding: 1rem;
+    border-radius: 4px;
+    margin: 1rem 0;
+    font-size: 0.95rem;
 }
 
 .success {
-    background-color: rgba(220, 255, 220, 0.7);
-    border-left: 4px solid var(--success-color);
-    color: var(--success-color);
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.error-message {
+    background-color: #fee2e2;
+    color: #b91c1c;
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
-/* Estilos de tablas para resultados */
+/* Estilos para secciones */
+section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.active-section {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.hidden-section {
+    display: none;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+/* Estilos para la tabla de resultados */
 table {
     width: 100%;
     border-collapse: collapse;
     margin: 1rem 0;
-    background-color: rgba(255, 255, 255, 0.8);
 }
 
 th, td {
-    padding: 0.8rem;
+    padding: 0.75rem;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--border-color);
 }
 
 th {
-    background-color: var(--primary-color);
-    color: var(--secondary-color);
-    font-weight: bold;
+    background-color: #f8fafc;
+    font-weight: 600;
 }
 
-tr:nth-child(even) {
-    background-color: rgba(245, 245, 220, 0.5);
-}
-
-tr:hover {
-    background-color: rgba(212, 175, 55, 0.1);
-}
-
-/* Información de aparticipante en sección de votación */
-.guest-info, .config-info {
-    background-color: rgba(248, 245, 230, 0.8);
-    padding: 1rem;
-    border-radius: var(--border-radius);
-    margin-bottom: 1.5rem;
-    border-left: 4px solid var(--accent-color);
-}
-
-/* Estilo para la sección de votación del maestro */
-.master-voting-container {
-    background-color: rgba(248, 245, 230, 0.9);
-    padding: 1rem;
-    border-radius: var(--border-radius);
-    margin-bottom: 1.5rem;
-    border-left: 4px solid var(--primary-color);
-    text-align: center;
-}
-
-.master-voting-container h3 {
-    margin-top: 0;
-    margin-bottom: 1rem;
-}
-
-/* Estilos para la sección de promedios por ron */
+/* Estilos para los promedios de rones */
 .rum-averages {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1rem;
-    margin-bottom: 1.5rem;
+    width: 100%;
 }
 
 .rum-card {
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: var(--border-radius);
+    background-color: #f8fafc;
+    border-radius: 6px;
     padding: 1rem;
-    box-shadow: var(--box-shadow);
-    border-left: 4px solid var(--primary-color);
-}
-
-.rum-card h4 {
-    margin-top: 0;
-    margin-bottom: 0.5rem;
-    color: var(--secondary-color);
-    font-size: 1.1rem;
+    border-left: 3px solid var(--secondary-color);
 }
 
 .rum-stats {
     display: flex;
     justify-content: space-between;
     margin-bottom: 0.5rem;
+    font-size: 0.95rem;
 }
 
-.rum-stats span {
+.rum-stats:first-of-type {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    margin-top: 0.5rem;
+}
+
+.average-score {
+    color: var(--success-color);
+    font-size: 1.3rem;
     font-weight: bold;
 }
 
 .participant-list {
-    max-height: 150px;
-    overflow-y: auto;
-    border-top: 1px dashed #ddd;
+    margin-top: 1rem;
+    border-top: 1px solid var(--border-color);
     padding-top: 0.5rem;
-    margin-top: 0.5rem;
 }
 
 .participant-item {
-    margin-bottom: 0.3rem;
-    padding: 0.3rem 0;
     display: flex;
     justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px dashed #e2e8f0;
 }
 
 .participant-name {
-    font-weight: bold;
-    text-transform: uppercase;
+    font-weight: 500;
 }
 
 .participant-score {
-    font-weight: bold;
-    color: var(--accent-color);
+    font-weight: 600;
+    color: var(--primary-color);
 }
 
-/* Estilos para pie de página */
+.guest-info {
+    background-color: #f0f9ff;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.guest-info p {
+    margin: 0.25rem 0;
+}
+
+.config-info {
+    background-color: #eff6ff;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.config-info p {
+    margin: 0.25rem 0;
+}
+
+.master-voting-container {
+    background-color: #fef3c7;
+    padding: 1rem;
+    border-radius: 4px;
+    margin: 1rem 0;
+}
+
+.master-voting-container h3 {
+    margin-top: 0;
+    color: #92400e;
+}
+
 footer {
     text-align: center;
+    margin-top: auto;
     padding: 1rem;
-    margin-top: 2rem;
-    color: var(--accent-color);
+    color: #6b7280;
     font-size: 0.9rem;
 }
 
-/* Estilos responsivos */
+/* Mejoras para dispositivos móviles */
 @media (max-width: 768px) {
-    .container {
-        padding: 1rem;
-    }
-    
     .button-container {
         flex-direction: column;
-    }
-    
-    .btn {
         width: 100%;
-        margin-bottom: 0.5rem;
     }
     
-    .card, .welcome-card {
-        padding: 1.5rem;
+    .button-container button {
+        width: 100%;
     }
     
     h1 {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
     
     h2 {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
     }
     
-    .wide-card {
-        overflow-x: auto;
+    .card, .welcome-card {
+        padding: 1rem;
     }
     
     .rum-averages {
         grid-template-columns: 1fr;
+    }
+    
+    .wide-card {
+        max-width: 100%;
     }
 }
